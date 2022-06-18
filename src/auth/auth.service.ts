@@ -73,6 +73,13 @@ export class AuthService {
 
     if (!passwordMatches) throw new ForbiddenException('Incorrect credentials');
 
-    return this.signToken(user.id, user.email);
+    delete user.hash;
+    delete user.createdAt;
+    delete user.updatedAt;
+
+    return {
+      ...user,
+      ...(await this.signToken(user.id, user.email)),
+    };
   }
 }
